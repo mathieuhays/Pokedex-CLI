@@ -7,30 +7,34 @@ import (
 	"net/http"
 )
 
-func (c *Client) ListLocations(pageURL *string) (structs.Resource, error) {
-	url := baseUrl + "/location-area"
-	if pageURL != nil {
-		url = *pageURL
-	}
+func (c *Client) GetLocationURL() string {
+	return baseUrl + "/location-area"
+}
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return structs.Resource{}, err
-	}
+func (c *Client) ListLocations(url string) (structs.Resource, error) {
+	dat, exists := c.cache.Get(url)
+	if !exists {
+		req, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			return structs.Resource{}, err
+		}
 
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return structs.Resource{}, err
-	}
-	defer resp.Body.Close()
+		resp, err := c.httpClient.Do(req)
+		if err != nil {
+			return structs.Resource{}, err
+		}
+		defer resp.Body.Close()
 
-	dat, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return structs.Resource{}, err
+		dat, err = io.ReadAll(resp.Body)
+		if err != nil {
+			return structs.Resource{}, err
+		}
+
+		c.cache.Add(url, dat)
 	}
 
 	locations := structs.Resource{}
-	err = json.Unmarshal(dat, &locations)
+	err := json.Unmarshal(dat, &locations)
 	if err != nil {
 		return structs.Resource{}, err
 	}

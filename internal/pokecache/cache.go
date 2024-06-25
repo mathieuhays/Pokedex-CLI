@@ -6,9 +6,8 @@ import (
 )
 
 type Cache struct {
-	cache    map[string]cacheEntry
-	mu       *sync.Mutex
-	duration time.Duration
+	cache map[string]cacheEntry
+	mu    *sync.Mutex
 }
 
 type cacheEntry struct {
@@ -17,24 +16,53 @@ type cacheEntry struct {
 }
 
 func (c *Cache) Add(key string, val []byte) {
-	// @TODO implement Cache Add
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	c.cache[key] = cacheEntry{
+		createdAt: time.Now(),
+		val:       val,
+	}
 }
 
 func (c *Cache) Get(key string) ([]byte, bool) {
-	// @TODO implement Cache Get
-	return []byte{}, false
-}
+	c.mu.Lock()
+	defer c.mu.Unlock()
 
-func (c *Cache) realLoop() {
-	// @TODO implement cache real loop
-}
-
-func NewCache() *Cache {
-	cache := &Cache{
-		cache: make(map[string]cacheEntry),
+	entry, ok := c.cache[key]
+	if !ok {
+		return []byte{}, false
 	}
 
-	cache.realLoop()
+	return entry.val, true
+}
+
+func (c *Cache) reap(now time.Time, last time.Duration) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	for key, entry := range c.cache {
+		threshold := entry.createdAt.Add(last)
+		if threshold.Before(now) {
+			delete(c.cache, key)
+		}
+	}
+}
+
+func (c *Cache) realLoop(interval time.Duration) {
+	ticker := time.NewTicker(interval)
+	for range ticker.C {
+		c.reap(time.Now(), interval)
+	}
+}
+
+func NewCache(interval time.Duration) *Cache {
+	cache := &Cache{
+		cache: make(map[string]cacheEntry),
+		mu:    &sync.Mutex{},
+	}
+
+	go cache.realLoop(interval)
 
 	return cache
 }

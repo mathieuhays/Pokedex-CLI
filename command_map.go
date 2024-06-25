@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func renderLocation(r *repl, locationURL *string) error {
+func renderLocation(r *repl, locationURL string) error {
 	resource, err := r.config.api.ListLocations(locationURL)
 	if err != nil {
 		return err
@@ -21,9 +21,20 @@ func renderLocation(r *repl, locationURL *string) error {
 }
 
 func commandMap(r *repl, args []string) error {
-	return renderLocation(r, r.config.nextLocationURL)
+	url := r.config.api.GetLocationURL()
+
+	if r.config.nextLocationURL != nil {
+		url = *r.config.nextLocationURL
+	}
+
+	return renderLocation(r, url)
 }
 
 func commandPreviousMap(r *repl, args []string) error {
-	return renderLocation(r, r.config.previousLocationURL)
+	if r.config.previousLocationURL == nil {
+		_, _ = fmt.Fprintln(r.out, "No previous location to show")
+		return nil
+	}
+
+	return renderLocation(r, *r.config.previousLocationURL)
 }
