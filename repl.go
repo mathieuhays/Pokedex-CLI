@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/mathieuhays/pokedex-cli/internal/pokeapi"
 	"io"
 	"os"
 	"strings"
@@ -13,7 +12,7 @@ type repl struct {
 	scanner  *bufio.Scanner
 	out      io.Writer
 	commands map[string]cliCommand
-	api      *pokeapi.PokeAPI
+	config   *config
 }
 
 const promptPrefix = "pokedex > "
@@ -45,12 +44,12 @@ func (r *repl) Listen() {
 	}
 }
 
-func newConsoleRepl(commands map[string]cliCommand, api *pokeapi.PokeAPI) *repl {
+func newConsoleRepl(commands map[string]cliCommand, cfg *config) *repl {
 	return &repl{
 		scanner:  bufio.NewScanner(os.Stdin),
 		out:      os.Stdout,
 		commands: commands,
-		api:      api,
+		config:   cfg,
 	}
 }
 
