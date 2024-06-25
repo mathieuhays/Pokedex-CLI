@@ -21,7 +21,7 @@ func renderLocation(r *repl, locationURL string) error {
 }
 
 func commandMap(r *repl, args []string) error {
-	url := r.config.api.GetLocationURL()
+	url := r.config.api.GetLocationResourceURL()
 
 	if r.config.nextLocationURL != nil {
 		url = *r.config.nextLocationURL
