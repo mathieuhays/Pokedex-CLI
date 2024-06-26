@@ -1,31 +1,26 @@
 package pokeapi
 
-import (
-	"github.com/mathieuhays/pokedex-cli/internal/pokeapi/structs"
-)
-
-func (c *Client) GetLocationResourceURL() string {
+func (c *Client) getLocationResourceURL() string {
 	return baseUrl + "/location-area"
 }
 
-func (c *Client) GetLocationAreaURL(area string) string {
+func (c *Client) getLocationAreaURL(area string) string {
 	return baseUrl + "/location-area/" + area
 }
 
-func (c *Client) ListLocations(url string) (structs.NamedApiResourceList, error) {
-	var object structs.NamedApiResourceList
-	err := c.requestWithCache(url, &object)
-	if err != nil {
-		return structs.NamedApiResourceList{}, err
+func (c *Client) listLocationsWithURL(url string) (object NamedApiResourceList, err error) {
+	err = c.requestWithCache(url, &object)
+	if err == nil {
+		object.Client = c
 	}
-	return object, nil
+	return
 }
 
-func (c *Client) GetLocationAreaDetails(url string) (structs.LocationArea, error) {
-	var object structs.LocationArea
-	err := c.requestWithCache(url, &object)
-	if err != nil {
-		return structs.LocationArea{}, err
-	}
-	return object, nil
+func (c *Client) ListLocations() (object NamedApiResourceList, err error) {
+	return c.listLocationsWithURL(c.getLocationResourceURL())
+}
+
+func (c *Client) GetLocationAreaDetails(area string) (object LocationArea, err error) {
+	err = c.requestWithCache(c.getLocationAreaURL(area), &object)
+	return
 }

@@ -2,17 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/mathieuhays/pokedex-cli/internal/pokeapi"
 )
 
-func renderLocation(r *repl, locationURL string) error {
-	resource, err := r.config.api.ListLocations(locationURL)
-	if err != nil {
-		return err
-	}
-
-	r.config.previousLocationURL = resource.Previous
-	r.config.nextLocationURL = resource.Next
-
+func renderLocation(r *repl, resource *pokeapi.NamedApiResourceList) error {
 	for _, result := range resource.Results {
 		_, _ = fmt.Fprintf(r.out, "%s\n", result.Name)
 	}
@@ -21,20 +14,37 @@ func renderLocation(r *repl, locationURL string) error {
 }
 
 func commandMap(r *repl, args []string) error {
-	url := r.config.api.GetLocationResourceURL()
+	var resource pokeapi.NamedApiResourceList
+	var err error
 
-	if r.config.nextLocationURL != nil {
-		url = *r.config.nextLocationURL
+	if r.config.lastLocation != nil {
+		resource, err = r.config.lastLocation.NextPage()
+	} else {
+		resource, err = r.config.api.ListLocations()
 	}
 
-	return renderLocation(r, url)
+	if err != nil {
+		return err
+	}
+
+	r.config.lastLocation = &resource
+	return renderLocation(r, &resource)
 }
 
 func commandPreviousMap(r *repl, args []string) error {
-	if r.config.previousLocationURL == nil {
-		_, _ = fmt.Fprintln(r.out, "No previous location to show")
-		return nil
+	var resource pokeapi.NamedApiResourceList
+	var err error
+
+	if r.config.lastLocation != nil {
+		resource, err = r.config.lastLocation.PreviousPage()
+	} else {
+		resource, err = r.config.api.ListLocations()
 	}
 
-	return renderLocation(r, *r.config.previousLocationURL)
+	if err != nil {
+		return err
+	}
+
+	r.config.lastLocation = &resource
+	return renderLocation(r, &resource)
 }

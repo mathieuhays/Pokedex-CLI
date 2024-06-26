@@ -14,8 +14,7 @@ func commandExplore(r *repl, args []string) error {
 	}
 
 	name := args[0]
-	url := r.config.api.GetLocationAreaURL(name)
-	details, err := r.config.api.GetLocationAreaDetails(url)
+	details, err := r.config.api.GetLocationAreaDetails(name)
 	if err != nil {
 		return err
 	}

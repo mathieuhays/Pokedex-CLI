@@ -1,4 +1,4 @@
-package structs
+package pokeapi
 
 type LocationArea struct {
 	Id                   int                   `json:"id"`

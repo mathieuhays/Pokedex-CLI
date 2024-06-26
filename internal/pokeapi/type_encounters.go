@@ -1,4 +1,4 @@
-package structs
+package pokeapi
 
 type EncounterMethodRate struct {
 	EncounterMethod NamedApiResource          `json:"encounter_method"`

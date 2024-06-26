@@ -5,7 +5,6 @@ import (
 )
 
 type config struct {
-	api                 *pokeapi.Client
-	nextLocationURL     *string
-	previousLocationURL *string
+	api          *pokeapi.Client
+	lastLocation *pokeapi.NamedApiResourceList
 }
