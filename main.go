@@ -10,7 +10,7 @@ import (
 func main() {
 	fmt.Println("  ===  P O K E D E X  ===  ")
 
-	cache := pokecache.NewCache(time.Minute * 15)
+	cache := pokecache.NewCache(time.Minute*15, time.Minute*15)
 	pokeClient := pokeapi.NewClient(time.Second*2, cache)
 	cfg := &config{
 		api: &pokeClient,
