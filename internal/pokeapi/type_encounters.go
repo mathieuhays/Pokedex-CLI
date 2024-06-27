@@ -6,25 +6,25 @@ type EncounterMethodRate struct {
 }
 
 type EncounterVersionDetails struct {
-	Rate    int              `json:"rate"`
-	Version NamedApiResource `json:"version"`
+	Rate    int
+	Version NamedApiResource
 }
 
 type VersionEncounterDetail struct {
-	Version          NamedApiResource `json:"version"`
-	MaxChance        int              `json:"max_chance"`
-	EncounterDetails []Encounter      `json:"encounter_details"`
+	Version          NamedApiResource
+	MaxChance        int         `json:"max_chance"`
+	EncounterDetails []Encounter `json:"encounter_details"`
 }
 
 type Encounter struct {
 	MinLevel        int                `json:"min_level"`
 	MaxLevel        int                `json:"max_level"`
 	ConditionValues []NamedApiResource `json:"condition_values"`
-	Chance          int                `json:"chance"`
-	Method          NamedApiResource   `json:"method"`
+	Chance          int
+	Method          NamedApiResource
 }
 
 type PokemonEncounter struct {
-	Pokemon        NamedApiResource         `json:"pokemon"`
+	Pokemon        NamedApiResource
 	VersionDetails []VersionEncounterDetail `json:"version_details"`
 }

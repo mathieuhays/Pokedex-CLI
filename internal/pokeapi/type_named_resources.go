@@ -5,20 +5,20 @@ import (
 )
 
 type NamedApiResource struct {
-	Name string `json:"name"`
-	URL  string `json:"url"`
+	Name string
+	URL  string
 }
 
 type Name struct {
-	Name     string           `json:"name"`
-	Language NamedApiResource `json:"language"`
+	Name     string
+	Language NamedApiResource
 }
 
 type NamedApiResourceList struct {
-	Count    int                `json:"count"`
-	Next     *string            `json:"next"`
-	Previous *string            `json:"previous"`
-	Results  []NamedApiResource `json:"results"`
+	Count    int
+	Next     *string
+	Previous *string
+	Results  []NamedApiResource
 	Client   *Client
 }
 
