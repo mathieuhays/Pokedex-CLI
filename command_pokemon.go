@@ -20,6 +20,7 @@ func commandPokemon(r *repl, args []string) error {
 
 	_, _ = fmt.Fprintf(r.out, "Pokemon: %v\n", pokemon.Name)
 	_, _ = fmt.Fprintln(r.out, "=============")
+	_, _ = fmt.Fprintf(r.out, "Base experience: %v\n", pokemon.BaseExperience)
 	_, _ = fmt.Fprintln(r.out, "Stats: (base stat / effort)")
 	if len(pokemon.Stats) == 0 {
 		_, _ = fmt.Fprintln(r.out, "no stats available")
