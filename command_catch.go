@@ -51,13 +51,7 @@ func commandCatch(r *repl, args []string) error {
 }
 
 func isCaught(experience int) bool {
-	base := 300
-	if experience >= 301 {
-		base = experience + 1
-	}
-
-	cmp := base - experience
-	return rand.Intn(base) <= cmp
+	return rand.Intn(experience) < 40
 }
 
 /*
